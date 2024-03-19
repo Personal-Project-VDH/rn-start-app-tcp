@@ -41,14 +41,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/V-d-H/rn-start-app-tcp.git"
+    "url": "git+https://github.com/Personal-Project-VDH/rn-start-app-tcp.git"
   },
   "author": "Vũ Đức Hoàng <vdhoang17112001@gmail.com> (https://github.com/V-d-H)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/V-d-H/rn-start-app-tcp/issues"
+    "url": "https://github.com/Personal-Project-VDH/rn-start-app-tcp/issues"
   },
-  "homepage": "https://github.com/V-d-H/rn-start-app-tcp#readme",
+  "homepage": "https://github.com/Personal-Project-VDH/rn-start-app-tcp#readme",
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
   },

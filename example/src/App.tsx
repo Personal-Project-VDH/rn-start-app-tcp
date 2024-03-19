@@ -1,26 +1,14 @@
 import * as React from 'react';
 
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import {START_APP} from "rn-start-app-tcp"
+import { View, Text, TouchableOpacity } from 'react-native';
+import { START_APP } from 'rn-start-app-tcp';
 
 const OPEN_START = 0;
 const CLOSE_START = -1;
-const SOCKET_CLOSE = -1;
-const SOCKET_NULL = -2;
 
 // CONNECT
-const WAS_CONNECTED = 0;
 const REGISTER_PACKAGE_SUCCESS = 1;
 const CONNECT_SUCCESS = 2;
-const PACKAGE_WAS_EXIST = -1;
-const PACKAGE_NULL = -2;
-
-// CONNECTED
-const SERVER_NOT_FOUND = -1;
-const SERVER_REFUSED = -2;
-
-// SEND
-const SEND_SUCCESS = 0;
 
 export default function App() {
   React.useEffect(() => {
@@ -101,16 +89,3 @@ export default function App() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  box: {
-    width: 60,
-    height: 60,
-    marginVertical: 20,
-  },
-});
