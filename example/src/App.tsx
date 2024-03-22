@@ -1,91 +1,55 @@
 import * as React from 'react';
 
-import { View, Text, TouchableOpacity } from 'react-native';
-import { START_APP } from 'rn-start-app-tcp';
+import { View } from 'react-native';
+import { CONSTANTS, START_APP } from 'rn-start-app-tcp';
 
-const OPEN_START = 0;
-const CLOSE_START = -1;
-
-// CONNECT
-const REGISTER_PACKAGE_SUCCESS = 1;
-const CONNECT_SUCCESS = 2;
+var interval_send: any;
+var timeout_connect: any;
 
 export default function App() {
   React.useEffect(() => {
     START_APP.listenEvent('close', (event: any) => {
-      START_APP.registerPackageName('com.module_start_app');
-      console.log(event);
+      START_APP.registerPackageName('com.washingapp');
+      console.log(event, ' close');
     });
     START_APP.listenEvent('connect', (event: any) => {
-      if (event.code === REGISTER_PACKAGE_SUCCESS) {
+      if (event.code === CONSTANTS.REGISTER_PACKAGE_SUCCESS) {
         START_APP.connectToServer();
-      } else if (event.code === CONNECT_SUCCESS) {
-        setInterval(() => {
-          START_APP.sendToServer(OPEN_START);
-        }, 2000);
+      } else if (event.code === CONSTANTS.CONNECT_SUCCESS) {
+        sendToKeepConnect();
       }
-      console.log(event);
+      console.log(event, 'connect');
     });
     START_APP.listenEvent('connected', (event: any) => {
-      console.log(event);
+      console.log(event, 'connected');
+      if (event.code === CONSTANTS.SERVER_REFUSED) {
+        reconnectFunction();
+      }
     });
 
     START_APP.listenEvent('error', (event: any) => {
-      console.log(event);
-    });
-
-    START_APP.listenEvent('send', (event: any) => {
-      console.log(event);
+      console.log(event, 'error');
     });
   }, []);
+
+  const sendToKeepConnect = () => {
+    clearTimeout(timeout_connect);
+    clearInterval(interval_send);
+    START_APP.sendToServer(CONSTANTS.OPEN_START);
+    interval_send = setInterval(() => {
+      START_APP.sendToServer(CONSTANTS.OPEN_START);
+    }, 2000);
+  };
+
+  const reconnectFunction = () => {
+    timeout_connect = setTimeout(() => {
+      START_APP.connectToServer();
+    }, 2000);
+  };
 
   return (
     <View
       style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}
-    >
-      <TouchableOpacity
-        style={{
-          width: 150,
-          height: 50,
-          backgroundColor: 'red',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => {
-          START_APP.connectToServer();
-        }}
-      >
-        <Text style={{ color: 'white' }}>test</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={{
-          width: 150,
-          height: 50,
-          backgroundColor: 'red',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => {
-          START_APP.registerPackageName('com.module_start_app');
-        }}
-      >
-        <Text style={{ color: 'white' }}>register package</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity
-        style={{
-          width: 150,
-          height: 50,
-          backgroundColor: 'red',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-        onPress={() => {
-          START_APP.sendToServer(CLOSE_START);
-        }}
-      >
-        <Text style={{ color: 'white' }}>send package</Text>
-      </TouchableOpacity>
-    </View>
+    ></View>
   );
 }
