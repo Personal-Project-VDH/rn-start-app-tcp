@@ -5,27 +5,14 @@ Open app by tcp protocol
 ## Installation
 
 ```sh
-npm install rn-start-app-tcp
+npm install https://github.com/Personal-Project-VDH/rn-start-app-tcp.git
 ```
 
 ## Usage
 
+Everything is in the example
+
 ```js
-import { multiply } from 'rn-start-app-tcp';
+ưtf
+//...
 
-// ...
-
-const result = await multiply(3, 7);
-```
-
-## Contributing
-
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
-
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
