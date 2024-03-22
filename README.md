@@ -12,7 +12,6 @@ npm install https://github.com/Personal-Project-VDH/rn-start-app-tcp.git
 
 Everything is in the example
 
-```js
-ưtf
-//...
+
+
 
