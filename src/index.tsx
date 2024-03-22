@@ -41,6 +41,7 @@ export const START_APP = new CLIENT();
 export const CONSTANTS = {
   OPEN_START: 0,
   CLOSE_START: -1,
+  QUIT_APP: -2,
   SOCKET_CLOSE: -1,
   SOCKET_NULL: -2,
   WAS_CONNECTED: 0,
