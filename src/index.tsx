@@ -1,4 +1,10 @@
-import { NativeModules, Platform, DeviceEventEmitter } from 'react-native';
+import {
+  NativeModules,
+  Platform,
+  DeviceEventEmitter,
+  BackHandler,
+  AppState,
+} from 'react-native';
 
 const LINKING_ERROR =
   `The package 'rn-start-app-tcp' doesn't seem to be linked. Make sure: \n\n` +
@@ -17,23 +23,97 @@ const RnStartAppTcp = NativeModules.RnStartAppTcp
       }
     );
 
-class CLIENT {
-  constructor() {}
+var interval_send: any;
+var timeout_connect: any;
 
-  connectToServer() {
+class CLIENT {
+  #name_package: string;
+  constructor() {
+    this.#name_package = '';
+  }
+
+  #connectToServer() {
     RnStartAppTcp.connectServer();
   }
 
   registerPackageName(name: string) {
     RnStartAppTcp.registerNamePackage(name);
+    this.#name_package = name;
   }
 
-  sendToServer(status: number) {
+  #sendToServer(status: number) {
     RnStartAppTcp.sendToServer(status);
   }
 
-  listenEvent(event_name: string, callback: any) {
+  quitApp() {
+    for (let i = 0; i < 3; i++) {
+      RnStartAppTcp.sendToServer(CONSTANTS.QUIT_APP);
+    }
+    setTimeout(() => {
+      clearTimeout(timeout_connect);
+      clearInterval(interval_send);
+      BackHandler.exitApp();
+    }, 1000);
+  }
+
+  #listenEvent(event_name: string, callback: any) {
     DeviceEventEmitter.addListener(event_name, callback);
+  }
+
+  #sendToKeepConnect() {
+    clearTimeout(timeout_connect);
+    clearInterval(interval_send);
+    this.#sendToServer(CONSTANTS.OPEN_START);
+    interval_send = setInterval(() => {
+      this.#sendToServer(CONSTANTS.OPEN_START);
+    }, 2000);
+  }
+
+  #reconnectFunction() {
+    timeout_connect = setTimeout(() => {
+      this.#connectToServer();
+    }, 2000);
+  }
+
+  sideEffectListener() {
+    this.#listenEvent('close', (event: any) => {
+      this.registerPackageName(this.#name_package);
+      console.log(event, ' close');
+    });
+    this.#listenEvent('connect', (event: any) => {
+      if (event.code === CONSTANTS.REGISTER_PACKAGE_SUCCESS) {
+        this.#connectToServer();
+      } else if (event.code === CONSTANTS.CONNECT_SUCCESS) {
+        this.#sendToKeepConnect();
+      }
+      console.log(event, 'connect');
+    });
+    this.#listenEvent('connected', (event: any) => {
+      console.log(event, 'connected');
+      if (event.code === CONSTANTS.SERVER_REFUSED) {
+        this.#reconnectFunction();
+      }
+    });
+
+    this.#listenEvent('error', (event: any) => {
+      console.log(event, 'error');
+    });
+  }
+
+  getAppState(appState: any, callback: any) {
+    AppState.addEventListener('change', (nextAppState) => {
+      if (
+        appState.current.match(/inactive|background/) &&
+        nextAppState === 'active'
+      ) {
+        console.log('App has come to the foreground!');
+        callback();
+        this.#connectToServer();
+      }
+
+      appState.current = nextAppState;
+      console.log('AppState', appState.current);
+    });
   }
 }
 

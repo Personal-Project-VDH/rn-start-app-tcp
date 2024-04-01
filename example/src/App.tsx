@@ -1,55 +1,29 @@
 import * as React from 'react';
 
-import { View } from 'react-native';
-import { CONSTANTS, START_APP } from 'rn-start-app-tcp';
-
-var interval_send: any;
-var timeout_connect: any;
+import { View, TouchableOpacity, Text, AppState } from 'react-native';
+import { START_APP } from 'rn-start-app-tcp';
 
 export default function App() {
+  const appState = React.useRef(AppState.currentState);
   React.useEffect(() => {
-    START_APP.listenEvent('close', (event: any) => {
-      START_APP.registerPackageName('com.washingapp');
-      console.log(event, ' close');
-    });
-    START_APP.listenEvent('connect', (event: any) => {
-      if (event.code === CONSTANTS.REGISTER_PACKAGE_SUCCESS) {
-        START_APP.connectToServer();
-      } else if (event.code === CONSTANTS.CONNECT_SUCCESS) {
-        sendToKeepConnect();
-      }
-      console.log(event, 'connect');
-    });
-    START_APP.listenEvent('connected', (event: any) => {
-      console.log(event, 'connected');
-      if (event.code === CONSTANTS.SERVER_REFUSED) {
-        reconnectFunction();
-      }
-    });
-
-    START_APP.listenEvent('error', (event: any) => {
-      console.log(event, 'error');
+    START_APP.sideEffectListener();
+    START_APP.registerPackageName('com.rnstartapptcpexample');
+    START_APP.getAppState(appState, () => {
+      console.log('hello');
+      //use lib restart app in here
     });
   }, []);
-
-  const sendToKeepConnect = () => {
-    clearTimeout(timeout_connect);
-    clearInterval(interval_send);
-    START_APP.sendToServer(CONSTANTS.OPEN_START);
-    interval_send = setInterval(() => {
-      START_APP.sendToServer(CONSTANTS.OPEN_START);
-    }, 2000);
+  // use this function will not open app
+  const quitApp = () => {
+    START_APP.quitApp();
   };
-
-  const reconnectFunction = () => {
-    timeout_connect = setTimeout(() => {
-      START_APP.connectToServer();
-    }, 2000);
-  };
-
   return (
     <View
       style={{ flex: 1, justifyContent: 'space-evenly', alignItems: 'center' }}
-    ></View>
+    >
+      <TouchableOpacity onPress={quitApp}>
+        <Text>test</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
