@@ -108,7 +108,6 @@ class CLIENT {
       ) {
         console.log('App has come to the foreground!');
         callback();
-        this.#connectToServer();
       }
 
       appState.current = nextAppState;
