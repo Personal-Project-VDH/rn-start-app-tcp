@@ -11,6 +11,7 @@ export default function App() {
     START_APP.getAppState(appState, () => {
       console.log('hello');
       //use lib restart app in here
+      // RNRestart
     });
   }, []);
   // use this function will not open app

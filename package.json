@@ -1,6 +1,6 @@
 {
   "name": "rn-start-app-tcp",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Open app by tcp protocol",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",

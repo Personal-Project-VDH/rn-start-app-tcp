@@ -46,12 +46,12 @@ class CLIENT {
   }
 
   quitApp() {
-    for (let i = 0; i < 3; i++) {
-      RnStartAppTcp.sendToServer(CONSTANTS.QUIT_APP);
-    }
+    clearTimeout(timeout_connect);
+    clearInterval(interval_send);
+
+    RnStartAppTcp.sendToServer(CONSTANTS.QUIT_APP);
+
     setTimeout(() => {
-      clearTimeout(timeout_connect);
-      clearInterval(interval_send);
       BackHandler.exitApp();
     }, 1000);
   }
